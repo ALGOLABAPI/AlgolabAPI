@@ -10,11 +10,11 @@ namespace AlgolabAPI
 {
     public static class WebSocket
     {
-        public static string checker = Program.ComputeSha256Hash(Program.APIKEY + Program.hostname+"/ws");
+        public static string checker = Program.ComputeSha256Hash(Program.APIKEY + Program.hostname + "/ws");
         public static ClientWebSocket webSocket = new ClientWebSocket();
         public static DateTime senddate = DateTime.Now;
         public static async Task ConnectToWebsocket()
-        {           
+        {
             try
             {
                 webSocket.Options.SetRequestHeader("APIKEY", Program.APIKEY);
@@ -22,11 +22,11 @@ namespace AlgolabAPI
                 webSocket.Options.SetRequestHeader("Checker", checker);
                 await webSocket.ConnectAsync(new Uri(Program.websocketurl), CancellationToken.None);
 
-                
+
                 await Task.WhenAll(Receive(webSocket), Send(webSocket));
             }
             catch (Exception ex)
-            {                
+            {
             }
         }
         private static async Task Receive(ClientWebSocket webSocket)
@@ -46,20 +46,20 @@ namespace AlgolabAPI
                         Depth depthmodel = JsonConvert.DeserializeObject<Depth>(JsonConvert.SerializeObject(model.Content));
 
                         Console.WriteLine(JsonConvert.SerializeObject(depthmodel));
-                        
+
                     }
-                    else if(model != null && model.Type == "T")
+                    else if (model != null && model.Type == "T")
                     {
                         Tick tickmodel = JsonConvert.DeserializeObject<Tick>(JsonConvert.SerializeObject(model.Content));
-                        
+
                         Console.WriteLine(JsonConvert.SerializeObject(tickmodel));
-                        
+
                     }
 
                     //Console.WriteLine(a);
                 }
                 catch (Exception ex)
-                {                    
+                {
                 }
             }
             if (webSocket.State != System.Net.WebSockets.WebSocketState.Open)
@@ -70,7 +70,7 @@ namespace AlgolabAPI
 
         private static async Task Send(ClientWebSocket webSocket)
         {
-            
+
             while (webSocket.State == System.Net.WebSockets.WebSocketState.Open)
             {
 
@@ -83,6 +83,18 @@ namespace AlgolabAPI
                     var buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
                     await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
+
+                    message = "{\"Type\":\"T\",\"Token\":\"" + Program.HASH + "\",\"Symbols\":[\"ALL\"]}";
+
+                    encoded = Encoding.UTF8.GetBytes(message);
+                    buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+                    WebSocket.webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+
+                    message = "{\"Type\":\"D\",\"Token\":\"" + Program.HASH + "\",\"Symbols\":[\"ALL\"]}";
+
+                    encoded = Encoding.UTF8.GetBytes(message);
+                    buffer = new ArraySegment<Byte>(encoded, 0, encoded.Length);
+                    WebSocket.webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
         }

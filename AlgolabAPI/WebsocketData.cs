@@ -14,37 +14,37 @@ namespace AlgolabAPI
     [Serializable]
     public class Depth
     {
-        public string Symbol { get; set; }
-        public string Market { get; set; }
-        public string Direction { get; set; }
-        public int Row { get; set; }
-        public int Quantity { get; set; }
-        public double Price { get; set; }
-        public int OrderCount { get; set; }
-        public DateTime Date { get; set; }
+        public string Symbol { get; set; } //Sembol
+        public string Market { get; set; } //VIP veya IMKBH veya FX gibi market bilgisi
+        public string Direction { get; set; } //Yön
+        public int Row { get; set; } //Satır
+        public int Quantity { get; set; } //Lot Miktarı
+        public double Price { get; set; } //Fiyat
+        public int OrderCount { get; set; } //Emir Miktarı
+        public DateTime Date { get; set; } //Güncellenme tarihi
 
     }
 
     [Serializable]
     public class Tick
     {
-        public string Symbol { get; set; }
-        public string Market { get; set; }
-        public double Price { get; set; }
-        public double Change { get; set; }
-        public double Ask { get; set; }
-        public double Bid { get; set; }
-        public DateTime Date { get; set; }
-        public double ChangePercentage { get; set; }
-        public double High { get; set; }
-        public double Low { get; set; }
-        public double TradeQuantity { get; set; }
-        public string Direction { get; set; }
-        public double RefPrice { get; set; }
-        public double BalancePrice { get; set; }
-        public double BalanceAmount { get; set; }
-        public string Buying { get; set; }
-        public string Selling { get; set; }
+        public string Symbol { get; set; } //Sembol
+        public string Market { get; set; } //VIP veya IMKBH veya FX gibi market bilgisi
+        public double Price { get; set; } //Fiyat
+        public double Change { get; set; }//Dünkü kapanış fiyatına göre değişim fiyatı
+        public double Ask { get; set; } //Satış Fiyatı
+        public double Bid { get; set; } //Alış Fiyatı
+        public DateTime Date { get; set; } //İşlem Saati
+        public double ChangePercentage { get; set; }//Dünkü kapanış fiyatına göre değişim yüzdesi
+        public double High { get; set; } //Günlük En Yüksek Fiyat
+        public double Low { get; set; } // Günlük En Düşük Fiyat
+        public double TradeQuantity { get; set; } //İşlem Lot
+        public string Direction { get; set; }// Yön
+        public double RefPrice { get; set; } //Baz Fiyat
+        public double BalancePrice { get; set; } //Denge Fiyatı
+        public double BalanceAmount { get; set; } //Denge Miktarı
+        public string Buying { get; set; } //Alan
+        public string Selling { get; set; } //Satan
     }
-    
+
 }

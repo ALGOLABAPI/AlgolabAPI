@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace AlgolabAPI
 {
@@ -46,8 +49,10 @@ namespace AlgolabAPI
             var control = LoginControl(token, SMSCODE);
             HASH = control.Content.Hash;
 
-           
+
             WebSocket.ConnectToWebsocket();
+
+
 
             //string symbol = "TSKB";
             //var Equity = GetEquityInfo(symbol);
@@ -61,7 +66,8 @@ namespace AlgolabAPI
             //var viopCustomerOverall = ViopCustomerOverall("");
             //var viopCustomerTransactions = ViopCustomerTransactions("");
 
-            //var sendOrder = SendOrder("EKGYO", "BUY", "limit", "3.90", "1", true, true, "");
+            //var sendOrder = SendOrder("TSKB", "BUY", "piyasa", "", "1", true, true, "");
+            //var sendOrder2 = SendOrder("TSKB", "BUY", "piyasa", "", "1", true, true, "");
             //string orderid = sendOrder.Content.ToString().Split(';')[0].Split(":")[1].Trim();
 
             //var modifyOrder = ModifyOrder(orderid, "3.91", "1", false, "");
@@ -70,11 +76,12 @@ namespace AlgolabAPI
 
             //var sessionRefresh = SessionRefresh();
 
-            //var getcandledata = GetCandleData("TSKB", "1");
+            //var getcandledata = DeserializeJson<List<Bar>>(SerializeJson(GetCandleData("GARAN", "1").Content));
+            //var getcandledata2 = DeserializeJson<List<Bar>>(SerializeJson(GetCandleData("CCOLA", "1").Content));
             Console.ReadLine();
         }
 
-        public  static Response LoginUser(string username,string password)
+        public static Response LoginUser(string username, string password)
         {
             try
             {
@@ -86,7 +93,7 @@ namespace AlgolabAPI
 
                 string result = string.Empty;
 
-                var request = (HttpWebRequest)WebRequest.Create(apiurl+ URL_LOGIN_USER);
+                var request = (HttpWebRequest)WebRequest.Create(apiurl + URL_LOGIN_USER);
 
                 var data = Encoding.UTF8.GetBytes(postData);
 
@@ -110,7 +117,7 @@ namespace AlgolabAPI
             }
             catch (Exception ex)
             {
-                return new Response() { Success = false, Message = ex.Message ,Content=ex};
+                return new Response() { Success = false, Message = ex.Message, Content = ex };
             }
         }
 
@@ -157,7 +164,7 @@ namespace AlgolabAPI
         public static Response GetEquityInfo(string symbol)
         {
             try
-            {                
+            {
 
                 string postData = "{\"symbol\":\"" + symbol + "\"}";
 
@@ -170,7 +177,7 @@ namespace AlgolabAPI
 
                 request.Headers.Add("APIKEY", APIKEY);
                 request.Headers.Add("Authorization", HASH);
-                request.Headers.Add("Checker", ComputeSha256Hash(APIKEY + hostname + URL_GETEQUITYINFO+postData));
+                request.Headers.Add("Checker", ComputeSha256Hash(APIKEY + hostname + URL_GETEQUITYINFO + postData));
                 request.ContentType = "application/json; charset=utf-8";
                 request.Method = "POST";
                 request.Accept = "application/json; charset=utf-8";
@@ -237,7 +244,7 @@ namespace AlgolabAPI
             try
             {
 
-                string postData = "{\"Subaccount\":\""+Subaccount+"\"}";
+                string postData = "{\"Subaccount\":\"" + Subaccount + "\"}";
 
 
                 string result = string.Empty;
@@ -388,12 +395,12 @@ namespace AlgolabAPI
             }
         }
 
-        public static Response SendOrder(string symbol,string direction,string pricetype,string price,string lot,bool sms,bool email, string Subaccount)
+        public static Response SendOrder(string symbol, string direction, string pricetype, string price, string lot, bool sms, bool email, string Subaccount)
         {
             try
             {
 
-                string postData = "{\"symbol\":\""+symbol+"\",\"direction\":\""+ direction+"\",\"pricetype\":\""+ pricetype + "\",\"price\":\""+ price + "\",\"lot\":\""+ lot + "\",\"sms\":"+ sms.ToString().ToLower() + ",\"email\":"+ email.ToString().ToLower() + ",\"subAccount\":\""+ Subaccount + "\"}";
+                string postData = "{\"symbol\":\"" + symbol + "\",\"direction\":\"" + direction + "\",\"pricetype\":\"" + pricetype + "\",\"price\":\"" + price + "\",\"lot\":\"" + lot + "\",\"sms\":" + sms.ToString().ToLower() + ",\"email\":" + email.ToString().ToLower() + ",\"subAccount\":\"" + Subaccount + "\"}";
 
 
                 string result = string.Empty;
@@ -505,7 +512,7 @@ namespace AlgolabAPI
             }
         }
 
-        public static Response DeleteOrderViop(string id,string adet, string Subaccount)
+        public static Response DeleteOrderViop(string id, string adet, string Subaccount)
         {
             try
             {
@@ -687,6 +694,17 @@ namespace AlgolabAPI
             catch
             {
                 return default(T);
+            }
+        }
+        public static string SerializeJson(object obj)
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(obj);
+            }
+            catch
+            {
+                return null;
             }
         }
     }
