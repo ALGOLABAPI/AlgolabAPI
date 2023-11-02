@@ -47,7 +47,8 @@ namespace AlgolabAPI
             Console.WriteLine("Sms Giriniz.");
             SMSCODE = Console.ReadLine();
             var control = LoginControl(token, SMSCODE);
-            HASH = control.Content.Hash;
+            HASH = control.Content.hash; // .Hash şeklinde kullanınca gelen veri otomatik "null" dönüyor,
+            // dolayısı ile diğer methodlarda Authorize problemi yaşanıyor.
 
 
             WebSocket.ConnectToWebsocket();
